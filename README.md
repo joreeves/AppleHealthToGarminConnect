@@ -4,7 +4,7 @@ Convert an **Apple Health** export into **Garmin-importable "Fitbit" CSV files**
 (one per year), for Garmin Connect's *Import Fitbit Data* feature. Runs 100% in
 your browser — your health data never leaves your device.
 
-- **Live site:** _add your Cloudflare Workers URL / custom domain here_
+- **Live site:** https://applehealthtogarmin.com
 - **Support this project:** [☕ Ko-fi](https://ko-fi.com/josiah1194)
 
 It also ships the original Python CLI (`health_to_garmin_fitbit.py`) that the web
