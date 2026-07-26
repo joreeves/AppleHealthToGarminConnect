@@ -9,7 +9,7 @@ import { aggregate, buildYearlyCsvs, summarize } from "./convert.js";
 configure({ useWebWorkers: false }); // we're already in a worker; no nested/blob workers (CSP-safe)
 
 self.onmessage = async (e) => {
-  const { file, includeExisting } = e.data;
+  const { file, skipExisting } = e.data;
   try {
     const { stream, total } = await openXmlStream(file);
 
@@ -34,7 +34,7 @@ self.onmessage = async (e) => {
     const result = await aggregate(streamLines(lineStream));
     self.postMessage({ type: "progress", bytes: total || bytes, total });
 
-    const built = buildYearlyCsvs(result, { includeExisting });
+    const built = buildYearlyCsvs(result, { skipGarminDays: skipExisting });
     self.postMessage({
       type: "done",
       files: Object.fromEntries(built.files),

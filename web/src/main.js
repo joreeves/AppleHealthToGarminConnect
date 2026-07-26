@@ -7,7 +7,7 @@ configure({ useWebWorkers: false });
 const $ = (id) => document.getElementById(id);
 const drop = $("drop");
 const fileInput = $("file");
-const includeExisting = $("includeExisting");
+const skipExisting = $("skipExisting");
 const progressWrap = $("progress");
 const bar = $("bar");
 const progressLabel = $("progressLabel");
@@ -74,7 +74,7 @@ function startConversion(file) {
     worker.terminate();
     showError("Worker error: " + (err.message || err.filename || "unknown"));
   };
-  worker.postMessage({ file, includeExisting: includeExisting.checked });
+  worker.postMessage({ file, skipExisting: skipExisting.checked });
 }
 
 async function renderResults({ files, perYear, skipped, summary }) {
@@ -134,7 +134,7 @@ async function renderResults({ files, perYear, skipped, summary }) {
     const note = document.createElement("p");
     note.className = "muted";
     note.textContent =
-      `Skipped ${skipped.length} day(s) Garmin already has: ${skipped.join(", ")}. ` +
+      `You chose to skip ${skipped.length} day(s) that already came from Garmin: ${skipped.join(", ")}. ` +
       `Untick the box above to include them.`;
     wrap.appendChild(note);
   }

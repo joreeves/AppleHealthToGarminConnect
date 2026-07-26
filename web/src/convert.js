@@ -116,8 +116,9 @@ function rowFor(day, acc) {
  *   { files: Map<filename, content>, perYear: [{year,days,steps}], skipped: [dayStr] }
  * `content` uses \n line endings + trailing \n (no BOM) — Garmin-safe.
  */
-export function buildYearlyCsvs({ days, garminDays }, { includeExisting = false } = {}) {
-  const skip = includeExisting ? new Set() : garminDays;
+export function buildYearlyCsvs({ days, garminDays }, { skipGarminDays = false } = {}) {
+  // Default: include every day. Only drop Garmin-synced days when explicitly asked.
+  const skip = skipGarminDays ? garminDays : new Set();
   const byYear = new Map();
   for (const day of [...days.keys()].sort()) {
     if (skip.has(day)) continue;

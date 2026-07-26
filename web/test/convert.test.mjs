@@ -33,7 +33,8 @@ async function* lines(path) {
 const t0 = Date.now();
 console.log("Streaming export.xml through convert.js …");
 const result = await aggregate(lines(xmlPath));
-const { files } = buildYearlyCsvs(result, { includeExisting: false });
+// golden garmin_import/ was generated with Garmin-day skipping ON, so match that here
+const { files } = buildYearlyCsvs(result, { skipGarminDays: true });
 const summary = summarize(result);
 console.log(
   `Parsed in ${((Date.now() - t0) / 1000).toFixed(1)}s — ` +
