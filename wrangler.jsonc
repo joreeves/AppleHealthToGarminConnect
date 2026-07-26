@@ -6,5 +6,11 @@
   "compatibility_date": "2026-07-01",
   "assets": {
     "directory": "./web"
-  }
+  },
+  // Custom domain(s). custom_domain:true makes wrangler create the DNS record +
+  // SSL cert on deploy. Requires the zone to be active in this Cloudflare account.
+  "routes": [
+    { "pattern": "applehealthtogarmin.com", "custom_domain": true },
+    { "pattern": "www.applehealthtogarmin.com", "custom_domain": true }
+  ]
 }
