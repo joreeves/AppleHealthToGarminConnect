@@ -7,7 +7,10 @@ configure({ useWebWorkers: false });
 const $ = (id) => document.getElementById(id);
 const drop = $("drop");
 const fileInput = $("file");
-const skipExisting = $("skipExisting");
+const rangeFrom = $("rangeFrom");
+const rangeTo = $("rangeTo");
+const addRange = $("addRange");
+const rangeList = $("rangeList");
 const progressWrap = $("progress");
 const bar = $("bar");
 const progressLabel = $("progressLabel");
@@ -15,6 +18,7 @@ const results = $("results");
 const errorBox = $("error");
 
 let objectUrls = []; // revoked between runs
+const excludeRanges = []; // [{ from, to }] inclusive YYYY-MM-DD, user-selected
 
 function resetUI() {
   errorBox.hidden = true;
@@ -74,10 +78,10 @@ function startConversion(file) {
     worker.terminate();
     showError("Worker error: " + (err.message || err.filename || "unknown"));
   };
-  worker.postMessage({ file, skipExisting: skipExisting.checked });
+  worker.postMessage({ file, excludeRanges: excludeRanges.slice() });
 }
 
-async function renderResults({ files, perYear, skipped, summary }) {
+async function renderResults({ files, perYear, excludedCount, summary }) {
   progressWrap.hidden = true;
 
   const totalDays = perYear.reduce((a, y) => a + y.days, 0);
@@ -130,12 +134,10 @@ async function renderResults({ files, perYear, skipped, summary }) {
   }
   wrap.appendChild(ul);
 
-  if (skipped && skipped.length) {
+  if (excludedCount) {
     const note = document.createElement("p");
     note.className = "muted";
-    note.textContent =
-      `You chose to skip ${skipped.length} day(s) that already came from Garmin: ${skipped.join(", ")}. ` +
-      `Untick the box above to include them.`;
+    note.textContent = `Excluded ${excludedCount} day(s) from the date range(s) you selected.`;
     wrap.appendChild(note);
   }
 
@@ -183,4 +185,40 @@ drop.addEventListener("keydown", (e) => {
     e.preventDefault();
     fileInput.click();
   }
+});
+
+// --- exclude date ranges --------------------------------------------------
+function renderRanges() {
+  rangeList.innerHTML = "";
+  excludeRanges.forEach((r, i) => {
+    const label = r.from === r.to ? r.from : `${r.from} → ${r.to}`;
+    const li = document.createElement("li");
+    const text = document.createElement("span");
+    text.textContent = label;
+    const rm = document.createElement("button");
+    rm.type = "button";
+    rm.className = "range-remove";
+    rm.textContent = "×";
+    rm.setAttribute("aria-label", `Remove range ${label}`);
+    rm.addEventListener("click", () => {
+      excludeRanges.splice(i, 1);
+      renderRanges();
+    });
+    li.appendChild(text);
+    li.appendChild(rm);
+    rangeList.appendChild(li);
+  });
+}
+
+addRange.addEventListener("click", () => {
+  let from = rangeFrom.value;
+  let to = rangeTo.value;
+  if (!from && !to) return;
+  if (!from) from = to; // single-sided → single day
+  if (!to) to = from;
+  if (from > to) [from, to] = [to, from]; // normalise order
+  excludeRanges.push({ from, to });
+  rangeFrom.value = "";
+  rangeTo.value = "";
+  renderRanges();
 });

@@ -27,11 +27,16 @@
       </div>
     </section>
 
-    <label class="option">
-      <input id="skipExisting" type="checkbox" />
-      Skip days that already came from a synced Garmin device
-      <span class="muted">(off by default — you'll get all your data. Tick this only if you already use a Garmin device and want to avoid re-importing days it already recorded.)</span>
-    </label>
+    <div class="exclude">
+      <p class="option-title">Exclude date ranges <span class="muted">(optional)</span></p>
+      <p class="muted">By default every day is converted. Add ranges here to leave dates out — e.g. days a Garmin device already recorded, or data you don't want to import.</p>
+      <div class="range-row">
+        <label>From<input id="rangeFrom" type="date" /></label>
+        <label>To<input id="rangeTo" type="date" /></label>
+        <button id="addRange" type="button" class="btn small">Add range</button>
+      </div>
+      <ul id="rangeList" class="ranges"></ul>
+    </div>
 
     <div id="progress" class="progress" hidden>
       <div class="track"><div id="bar" class="fill"></div></div>

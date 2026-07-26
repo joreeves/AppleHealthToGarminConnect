@@ -57,12 +57,11 @@ export function* daySplits(startSec, endSec) {
 }
 
 /**
- * Consume an (async) iterable of lines; return { days: Map, garminDays: Set }.
+ * Consume an (async) iterable of lines; return { days: Map }.
  * Accumulates in file order so float sums match the Python reference exactly.
  */
 export async function aggregate(lines) {
   const days = new Map(); // dayStr -> { steps, dist_mi, floors, active_cal, basal_cal }
-  const garminDays = new Set();
 
   const bump = (day, key, v) => {
     let o = days.get(day);
@@ -91,9 +90,8 @@ export async function aggregate(lines) {
         for (const [day, secs] of daySplits(st, en)) bump(day, key, (val * secs) / total);
       }
     }
-    if (rec.sourceName === "Connect") garminDays.add(dS);
   }
-  return { days, garminDays };
+  return { days };
 }
 
 function fmt2(km) {
@@ -113,15 +111,21 @@ function rowFor(day, acc) {
 
 /**
  * Build the yearly CSVs. Returns:
- *   { files: Map<filename, content>, perYear: [{year,days,steps}], skipped: [dayStr] }
+ *   { files: Map<filename, content>, perYear: [{year,days,steps}], excludedCount }
  * `content` uses \n line endings + trailing \n (no BOM) — Garmin-safe.
+ *
+ * `excludeRanges` is an array of { from, to } inclusive YYYY-MM-DD strings; any
+ * day falling inside any range is left out of the output. Default: exclude nothing.
  */
-export function buildYearlyCsvs({ days, garminDays }, { skipGarminDays = false } = {}) {
-  // Default: include every day. Only drop Garmin-synced days when explicitly asked.
-  const skip = skipGarminDays ? garminDays : new Set();
+export function buildYearlyCsvs({ days }, { excludeRanges = [] } = {}) {
+  const isExcluded = (day) => excludeRanges.some((r) => day >= r.from && day <= r.to);
   const byYear = new Map();
+  let excludedCount = 0;
   for (const day of [...days.keys()].sort()) {
-    if (skip.has(day)) continue;
+    if (isExcluded(day)) {
+      excludedCount++;
+      continue;
+    }
     const y = day.slice(0, 4);
     if (!byYear.has(y)) byYear.set(y, []);
     byYear.get(y).push(day);
@@ -140,7 +144,7 @@ export function buildYearlyCsvs({ days, garminDays }, { skipGarminDays = false }
     files.set(`fitbit_activities_${y}.csv`, lines.join("\n") + "\n");
     perYear.push({ year: y, days: byYear.get(y).length, steps: ySteps });
   }
-  return { files, perYear, skipped: [...skip].sort() };
+  return { files, perYear, excludedCount };
 }
 
 /** Small headline summary for the UI. */

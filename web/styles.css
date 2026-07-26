@@ -65,11 +65,26 @@ a { color: var(--accent); }
 .drop-icon { font-size: 2rem; color: var(--accent); }
 .drop p { margin: 6px 0; }
 
-.option {
-  display: block; margin: 16px 2px; color: var(--ink); font-size: 0.95rem; cursor: pointer;
+.exclude { margin: 18px 2px; }
+.option-title { font-weight: 600; margin: 0 0 4px; }
+.range-row { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; margin: 12px 0 0; }
+.range-row label { display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; color: var(--muted); }
+.range-row input[type="date"] {
+  padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--card); color: var(--ink); color-scheme: light dark;
 }
-.option .muted { display: block; margin-left: 26px; }
-.option input { margin-right: 8px; }
+.btn.small { padding: 9px 14px; font-size: 0.9rem; cursor: pointer; }
+.ranges { list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.ranges li {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem;
+  background: color-mix(in srgb, var(--accent) 12%, var(--card));
+  border: 1px solid var(--line); border-radius: 999px; padding: 4px 6px 4px 12px;
+}
+.range-remove {
+  border: none; background: transparent; cursor: pointer; line-height: 1;
+  font-size: 1.05rem; color: var(--muted); padding: 0 2px;
+}
+.range-remove:hover { color: var(--err-ink); }
 
 .progress { margin: 22px 0; }
 .track { height: 12px; background: var(--line); border-radius: 999px; overflow: hidden; }

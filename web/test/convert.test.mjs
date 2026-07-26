@@ -33,8 +33,9 @@ async function* lines(path) {
 const t0 = Date.now();
 console.log("Streaming export.xml through convert.js …");
 const result = await aggregate(lines(xmlPath));
-// golden garmin_import/ was generated with Garmin-day skipping ON, so match that here
-const { files } = buildYearlyCsvs(result, { skipGarminDays: true });
+// no exclusions → every day included; golden must be generated the same way
+// (python health_to_garmin_fitbit.py --include-existing)
+const { files } = buildYearlyCsvs(result, {});
 const summary = summarize(result);
 console.log(
   `Parsed in ${((Date.now() - t0) / 1000).toFixed(1)}s — ` +
