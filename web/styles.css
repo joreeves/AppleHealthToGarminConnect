@@ -135,3 +135,4 @@ a { color: var(--accent); }
 
 footer { text-align: center; border-top: 1px solid var(--line); padding-top: 20px; }
 footer p { margin: 6px 0; }
+.feedback { margin-bottom: 16px !important; }
