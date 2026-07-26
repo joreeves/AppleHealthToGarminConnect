@@ -1,0 +1,17 @@
+# --- Personal health data — NEVER commit (this app's whole point is privacy) ---
+export.xml
+export.zip
+HKQuantityTypeIdentifier*.csv
+apple_health_export/
+
+# --- Generated outputs ---
+garmin_import/
+chunks/
+fit_out/
+fitbit_daily.csv
+*.fit
+
+# --- Misc ---
+.DS_Store
+Thumbs.db
+__pycache__/

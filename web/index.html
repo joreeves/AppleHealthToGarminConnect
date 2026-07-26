@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Apple Health → Garmin — Steps CSV Converter</title>
+  <meta name="description" content="Convert your Apple Health export into Garmin-importable Fitbit CSV files. 100% in your browser — your data never leaves your device." />
+  <!-- Defense-in-depth CSP (also enforced via _headers on Cloudflare). connect-src 'none' means the page cannot send your data anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; worker-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🏃</text></svg>" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main>
+    <header class="hero">
+      <h1>Apple&nbsp;Health → Garmin</h1>
+      <p class="lede">Turn your Apple Health export into Garmin-importable CSV files — one per year — for Garmin Connect's <em>Import Fitbit Data</em> feature.</p>
+      <p class="privacy-badge">🔒 100% in your browser. Your health data never leaves your device — no upload, no server, no storage.</p>
+    </header>
+
+    <section id="drop" class="drop" tabindex="0" role="button" aria-label="Choose or drop your Apple Health export file">
+      <input id="file" type="file" accept=".zip,.xml" hidden />
+      <div class="drop-inner">
+        <div class="drop-icon">⬆</div>
+        <p><strong>Drop your <code>export.zip</code> here</strong> or click to choose</p>
+        <p class="muted">Accepts the Apple Health <code>export.zip</code> or an extracted <code>export.xml</code>. Big files are fine — they're streamed, not uploaded.</p>
+      </div>
+    </section>
+
+    <label class="option">
+      <input id="includeExisting" type="checkbox" />
+      Include recent days Garmin already has data for
+      <span class="muted">(off by default — Garmin ignores days it already tracked, which can fail the import)</span>
+    </label>
+
+    <div id="progress" class="progress" hidden>
+      <div class="track"><div id="bar" class="fill"></div></div>
+      <p id="progressLabel" class="muted">Processing…</p>
+    </div>
+
+    <div id="error" class="error" hidden></div>
+    <section id="results" class="results" hidden></section>
+
+    <section class="guide">
+      <details>
+        <summary>📱 Step 1 — Export your data from Apple Health</summary>
+        <ol>
+          <li>Open the <strong>Health</strong> app on your iPhone.</li>
+          <li>Tap the <strong>Summary</strong> tab, then your <strong>profile picture / initials</strong> (top-right).</li>
+          <li>Scroll to the bottom and tap <strong>Export All Health Data</strong>, then <strong>Export</strong>.</li>
+          <li>Wait a few minutes while it prepares the file — the screen may look frozen; leave the app open.</li>
+          <li>When the Share sheet appears, send it to your computer: <strong>Save to Files</strong>, <strong>AirDrop</strong>, etc.</li>
+          <li>You'll get an <strong>export.zip</strong>. Drop that file into the box above (no need to unzip it).</li>
+        </ol>
+        <p class="muted">Heads up: the export can take several minutes and is often 100&nbsp;MB–1&nbsp;GB+. AirDrop or Save to Files is more reliable than email for big files.</p>
+      </details>
+
+      <details>
+        <summary>⌚ Step 2 — Import the CSVs into Garmin Connect</summary>
+        <ol>
+          <li>On a computer, go to <strong>connect.garmin.com</strong> and <strong>sign in</strong>.</li>
+          <li>Check your Garmin account's <strong>time zone</strong> is correct (Settings → profile) so dates line up.</li>
+          <li>Click the <strong>upload icon</strong> (cloud with an up-arrow) at the <strong>top-right</strong>.</li>
+          <li>Choose <strong>Import Data</strong>, then <strong>Browse</strong> and pick one <code>fitbit_activities_YYYY.csv</code>.</li>
+          <li>When asked for units, choose <strong>Kilometers</strong> (the files are metric), then <strong>Import Data</strong>.</li>
+          <li>Repeat for each year — <strong>one file at a time</strong>.</li>
+        </ol>
+        <ul class="gotchas">
+          <li><strong>One year per file</strong> — that's why this tool splits by year.</li>
+          <li><strong>Never open the CSV in Excel</strong> first — it reformats the file and Garmin will reject it. Upload it exactly as downloaded.</li>
+          <li>Dates can <strong>shift by a day</strong> if your Garmin time zone differs from your data's.</li>
+          <li>On days Garmin already has its own data, <strong>Garmin's data wins</strong> (the import won't overwrite it).</li>
+        </ul>
+      </details>
+    </section>
+
+    <section class="support">
+      <h2>Found this useful?</h2>
+      <p class="muted">This is a free, open-source hobby project. If it saved you some hassle, a small tip is hugely appreciated.</p>
+      <!-- Ko-fi page (a plain link-out, not the embed widget), so the strict no-network CSP stays intact. -->
+      <a id="donate" class="btn donate" href="https://ko-fi.com/josiah1194" target="_blank" rel="noopener noreferrer">☕ Support me on Ko-fi</a>
+    </section>
+
+    <footer>
+      <p class="muted">
+        Everything runs locally in your browser. The page makes <strong>no network requests</strong> with your data — you can verify in your browser's DevTools (Network tab) that nothing is uploaded.
+      </p>
+      <p class="muted">
+        <a id="source" href="#" target="_blank" rel="noopener noreferrer">View the source code</a> · Not affiliated with Apple, Garmin, or Fitbit.
+      </p>
+    </footer>
+  </main>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

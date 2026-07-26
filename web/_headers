@@ -1,0 +1,10 @@
+# Cloudflare Pages headers. The CSP is the enforceable version of the privacy
+# promise: connect-src 'none' means the browser itself blocks any attempt to
+# send the user's data off the page.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; worker-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'none'; form-action 'none'
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: no-referrer
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
