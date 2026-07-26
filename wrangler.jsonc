@@ -2,7 +2,7 @@
   // Static-assets-only Worker: no server code, just serves the files in ./web.
   // The site root is web/ (so web/index.html is served at "/"), and web/_headers
   // supplies the strict Content-Security-Policy.
-  "name": "apple-health-to-garmin-connect",
+  "name": "applehealthtogarminconnect",
   "compatibility_date": "2026-07-01",
   "assets": {
     "directory": "./web"
