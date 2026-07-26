@@ -5,6 +5,9 @@ A tiny static website that converts an Apple Health export into Garmin-importabl
 feature. It's a browser port of the project's Python CLI
 (`../health_to_garmin_fitbit.py`).
 
+**Source code:** https://github.com/joreeves/AppleHealthToGarminConnect
+**Support this project:** [☕ Ko-fi](https://ko-fi.com/josiah1194)
+
 ## Privacy by architecture
 **Your health data never leaves your device.** There is no backend and no storage.
 The picked `export.zip` / `export.xml` is read and processed entirely in the
@@ -54,10 +57,16 @@ python -m http.server 8080
   (not the embed widget), so the strict CSP stays intact.
 - **Source link**: point the `#source` link at your repo.
 
-## Deploy to Cloudflare Pages (free)
-- Create a Pages project from your Git repo; set the **output/root directory** to
-  `web`. No build command (static).
-- Or direct upload: `npx wrangler pages deploy web`.
+## Deploy to Cloudflare (free)
+Deployed as a Cloudflare **Workers static-assets** site. The repo-root
+`wrangler.jsonc` points at this `web/` folder:
+```jsonc
+{ "name": "apple-health-to-garmin-connect", "assets": { "directory": "./web" } }
+```
+- **Git-connected (auto-deploy):** connect the repo in Workers & Pages with an
+  empty build command and deploy command `npx wrangler deploy`. Every push
+  redeploys.
+- **Manual:** `npx wrangler deploy` from the repo root.
 - `_headers` applies the CSP automatically. Verify with `curl -I <url>`.
 
 ## Test parity with the Python CLI
@@ -66,3 +75,7 @@ node web/test/convert.test.mjs            # expects ../export.xml + ../garmin_im
 ```
 Runs `convert.js` over the real `export.xml` and diffs the generated CSVs against
 the Python output in `garmin_import/` (spot-checks Oct 10 2015 = 30,146 steps).
+
+## Support
+Free, open-source hobby project. If it saved you some hassle, a tip is appreciated:
+**[☕ Support me on Ko-fi](https://ko-fi.com/josiah1194)**
